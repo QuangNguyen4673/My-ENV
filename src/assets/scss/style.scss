@@ -1,0 +1,43 @@
+$gray-400: #ced4da; // gray bootstrap
+* {
+  list-style-type: none;
+  box-sizing: border-box;
+  color: white;
+}
+
+body {
+  background-color: rgb(32, 106, 174);
+}
+.gray {
+  color: $gray-400;
+}
+
+.navbar {
+  ul {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    margin-top: 0;
+  }
+  a {
+    text-decoration: none;
+  }
+}
+
+.dashboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+}
+.weather-info {
+  display: flex;
+  gap: 10px;
+}
+.middle-header {
+  h3 {
+    margin-bottom: 0;
+  }
+}
