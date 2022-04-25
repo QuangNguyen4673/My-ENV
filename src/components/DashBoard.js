@@ -7,7 +7,7 @@ export default function DashBoard() {
   return (
     <div className="dashboard">
       <FontAwesomeIcon icon={faCloud} color="white" size="4x" />
-      <div>
+      <div className="weather">
         <h2>Cloudy</h2>
         <div className="weather-info">
           <FontAwesomeIcon icon={faTemperatureHalf} color="white" /> 29.2&deg;C

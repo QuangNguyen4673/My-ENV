@@ -15,8 +15,9 @@ export default function NavBar() {
         <li>
           <div className="middle-header">
             <h3>myENV</h3>
-            <a href="\#" className="gray">
-              Current location <FontAwesomeIcon icon={faAngleDown} />
+            <a href="\#" className="location">
+              Current location{" "}
+              <FontAwesomeIcon icon={faAngleDown} color="white" />
             </a>
           </div>
         </li>

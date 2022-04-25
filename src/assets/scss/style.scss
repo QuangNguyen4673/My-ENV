@@ -1,4 +1,6 @@
-$gray-400: #ced4da; // gray bootstrap
+$gray: #ced4da; // gray 400 bootstrap
+$global-padding: 0 50px;
+$operation-number: 38px;
 * {
   list-style-type: none;
   box-sizing: border-box;
@@ -9,7 +11,7 @@ body {
   background-color: rgb(32, 106, 174);
 }
 .gray {
-  color: $gray-400;
+  color: $gray;
 }
 
 .navbar {
@@ -18,26 +20,89 @@ body {
     align-items: flex-start;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px;
+    padding: $global-padding;
     margin-top: 0;
   }
   a {
     text-decoration: none;
+    font-size: 25px;
+  }
+  .middle-header {
+    h3 {
+      margin-bottom: 0;
+    }
+    .location {
+      font-size: 1rem;
+      color: $gray;
+      * {
+        color: $gray; // for icon
+      }
+    }
   }
 }
 
 .dashboard {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   gap: 50px;
+  margin-bottom: 100px;
+  .weather {
+    &-info {
+      display: flex;
+      gap: 10px;
+    }
+  }
 }
-.weather-info {
+
+.operation {
   display: flex;
-  gap: 10px;
-}
-.middle-header {
-  h3 {
-    margin-bottom: 0;
+  justify-content: space-between;
+  padding: $global-padding;
+  &-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    &:not(:last-child) {
+      padding-right: 150px;
+      border-right: 1px solid white;
+    }
+    &-header {
+      text-transform: uppercase;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    &-description {
+      color: $gray;
+    }
+  }
+
+  .psi {
+    display: grid;
+    place-items: center;
+    min-width: 50px;
+    min-height: 50px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: rgb(1, 150, 0);
+    font-size: $operation-number;
+  }
+  .rain {
+    font-size: $operation-number;
+  }
+  .dengue {
+    height: 65px;
+    width: 65px;
+    background-color: rgb(137, 184, 217);
+    border-radius: 50%;
+    border: 3px solid white;
+  }
+  .add {
+    * {
+      color: black; // overide global color // for icon
+    }
   }
 }
