@@ -10,7 +10,7 @@ function App() {
       <NavBar />
       <DashBoard />
       <Operation />
-      {/*  <Chart /> */}
+      <Chart />
     </>
   );
 }

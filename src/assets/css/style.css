@@ -12,6 +12,9 @@ body {
   color: #ced4da;
 }
 
+.navbar {
+  margin-bottom: 50px;
+}
 .navbar ul {
   display: flex;
   align-items: flex-start;
@@ -25,7 +28,7 @@ body {
   font-size: 25px;
 }
 .navbar .middle-header h3 {
-  margin-bottom: 0;
+  margin-bottom: 5px;
 }
 .navbar .middle-header .location {
   font-size: 1rem;
@@ -49,20 +52,23 @@ body {
 
 .operation {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   padding: 0 50px;
 }
 .operation-item {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  flex-direction: column;
   gap: 10px;
   text-align: center;
+  max-width: 1000px;
+  width: 100%;
 }
 .operation-item:not(:last-child) {
-  padding-right: 150px;
-  border-right: 1px solid white;
+  border-right: 1px;
+  border-left: 0;
+  border-image: linear-gradient(to bottom, rgb(32, 106, 174), #ced4da) 1 100%;
 }
 .operation-item-header {
   text-transform: uppercase;

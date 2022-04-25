@@ -1,6 +1,7 @@
 $gray: #ced4da; // gray 400 bootstrap
 $global-padding: 0 50px;
-$operation-number: 38px;
+$primary-color: rgb(32, 106, 174);
+$operation-number-size: 38px;
 * {
   list-style-type: none;
   box-sizing: border-box;
@@ -8,13 +9,14 @@ $operation-number: 38px;
 }
 
 body {
-  background-color: rgb(32, 106, 174);
+  background-color: $primary-color;
 }
 .gray {
   color: $gray;
 }
 
 .navbar {
+  margin-bottom: 50px;
   ul {
     display: flex;
     align-items: flex-start;
@@ -29,7 +31,7 @@ body {
   }
   .middle-header {
     h3 {
-      margin-bottom: 0;
+      margin-bottom: 5px;
     }
     .location {
       font-size: 1rem;
@@ -57,18 +59,21 @@ body {
 
 .operation {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   padding: $global-padding;
   &-item {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    flex-direction: column;
     gap: 10px;
     text-align: center;
+    max-width: 1000px;
+    width: 100%;
     &:not(:last-child) {
-      padding-right: 150px;
-      border-right: 1px solid white;
+      border-right: 1px;
+      border-left: 0;
+      border-image: linear-gradient(to bottom, $primary-color, $gray) 1 100%;
     }
     &-header {
       text-transform: uppercase;
@@ -88,10 +93,10 @@ body {
     padding: 10px;
     border-radius: 4px;
     background-color: rgb(1, 150, 0);
-    font-size: $operation-number;
+    font-size: $operation-number-size;
   }
   .rain {
-    font-size: $operation-number;
+    font-size: $operation-number-size;
   }
   .dengue {
     height: 65px;
