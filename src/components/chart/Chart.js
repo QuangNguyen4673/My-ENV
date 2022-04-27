@@ -3,20 +3,28 @@ import data from "./data.csv";
 import * as d3 from "d3";
 const mockData = [
   {
-    date: "2013-04-28",
-    value: "135.98",
+    sun: "40",
+    dateTime: "18",
   },
   {
-    date: "2014-10-23",
-    value: "385.05",
+    sun: "0",
+    dateTime: "24",
   },
   {
-    date: "2015-02-26",
-    value: "237.71",
+    sun: "40",
+    dateTime: "6",
   },
   {
-    date: "2017-02-05",
-    value: "1043.63",
+    sun: "100",
+    dateTime: "12",
+  },
+  {
+    sun: "40",
+    dateTime: "18",
+  },
+  {
+    sun: "0",
+    dateTime: "24",
   },
 ];
 const exUrl =
@@ -25,46 +33,43 @@ export default function Chart() {
   const container = useRef(null);
   useEffect(() => {
     const render = (data) => {
-      const margin = { top: 10, right: 30, bottom: 30, left: 60 },
-        width = 460 - margin.left - margin.right,
-        height = 400 - margin.top - margin.bottom;
-      const svg = d3
-        .select(container.current)
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
+      const svg = d3.select(container.current);
+      const width = +svg.attr("width");
+      const height = +svg.attr("height");
+      const margin = { top: 20, right: 30, bottom: 30, left: 60 };
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+
       const x = d3
         .scaleTime()
         .domain(
           d3.extent(data, function (d) {
-            return d.date;
+            return d.dateTime;
           })
         )
-        .range([0, width]);
+        .range([0, innerWidth]);
 
-      svg
-        .append("g")
-        .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(x));
-      // Add Y axis
       const y = d3
         .scaleLinear()
         .domain([
           0,
           d3.max(data, function (d) {
-            return +d.value;
+            return +d.sun;
           }),
         ])
-        .range([height, 0]);
-      svg.append("g").call(d3.axisLeft(y));
+        .range([innerHeight, 0]);
 
-      svg
-        .append("path")
+      const g = svg
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+      g.append("g")
+        .attr("transform", `translate(0, ${innerHeight})`)
+        .call(d3.axisBottom(x));
+      g.append("g").call(d3.axisLeft(y));
+      g.append("path")
         .datum(data)
         .attr("fill", "none")
-        .attr("stroke", "steelblue")
+        .attr("stroke", "red")
         .attr("stroke-width", 1.5)
         .attr(
           "d",
@@ -72,18 +77,15 @@ export default function Chart() {
             .line()
             .x((d) => x(d.date))
             .y((d) => y(d.value))
+            .curve(d3.curveNatural)
         );
+      /* d3.select("g").remove(); */
     };
-    mockData.forEach((d) => {
-      d.date = d3.timeParse("%Y-%m-%d")(d.date);
-      d.value = +d.value;
-    });
-    console.log(mockData);
     render(mockData);
   }, [container]);
   return (
     <>
-      <div ref={container}></div>;
+      <svg width="800" height="400" ref={container}></svg>
     </>
   );
 }
