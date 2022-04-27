@@ -1,4 +1,4 @@
-import Chart from "./components/Chart";
+import Chart from "./components/chart/Chart";
 import DashBoard from "./components/DashBoard";
 import NavBar from "./components/NavBar";
 import "./assets/css/style.css";
