@@ -1,6 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
-import data from "./data.csv";
-import * as d3tf from "d3-time-format";
+import React, { useRef, useEffect } from "react";
 import * as d3 from "d3";
 const mockData = [
   {
@@ -70,8 +68,6 @@ export default function Chart() {
       const margin = { top: 20, right: 30, bottom: 30, left: 60 };
       const innerWidth = width - margin.left - margin.right;
       const innerHeight = height - margin.top - margin.bottom;
-
-      const formatDateTime = d3.timeFormat("%I:%M %p");
       const x = d3
         .scaleTime()
         .domain(
@@ -80,10 +76,6 @@ export default function Chart() {
           })
         )
         .range([0, innerWidth]);
-      /* .tickFormat((d) => {
-         
-          return formatDateTime(d);
-        }); */
 
       const y = d3
         .scaleLinear()
@@ -98,10 +90,16 @@ export default function Chart() {
       const g = svg
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
+
+      const xAxis = d3
+        .axisBottom(x)
+        .tickFormat((d) => d3.timeFormat("%-I%p")(d));
+      const yAxis = d3.axisLeft(y);
       g.append("g")
         .attr("transform", `translate(0, ${innerHeight})`)
-        .call(d3.axisBottom(x));
-      g.append("g").call(d3.axisLeft(y));
+        .call(xAxis);
+
+      g.append("g").call(yAxis);
       g.append("path")
         .datum(data)
         .attr("fill", "none")
@@ -118,6 +116,7 @@ export default function Chart() {
     };
     mockData.forEach((d) => {
       d.dateTime = new Date(d.dateTime);
+      console.log(d3.timeFormat("%-I%p")(new Date(d.dateTime)));
     });
     render(mockData);
   }, [container]);
