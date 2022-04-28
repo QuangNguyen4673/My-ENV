@@ -4,27 +4,27 @@ import * as d3 from "d3";
 const mockData = [
   {
     sun: "40",
-    dateTime: "18",
+    dateTime: "18:00",
   },
   {
     sun: "0",
-    dateTime: "24",
+    dateTime: "24:00",
   },
   {
     sun: "40",
-    dateTime: "6",
+    dateTime: "6:00",
   },
   {
     sun: "100",
-    dateTime: "12",
+    dateTime: "12:00",
   },
   {
     sun: "40",
-    dateTime: "18",
+    dateTime: "18:00",
   },
   {
     sun: "0",
-    dateTime: "24",
+    dateTime: "24:00",
   },
 ];
 const exUrl =
@@ -79,8 +79,11 @@ export default function Chart() {
             .y((d) => y(d.value))
             .curve(d3.curveNatural)
         );
-      /* d3.select("g").remove(); */
     };
+    mockData.forEach((d) => {
+      d.dateTime = d3.timeFormat("%H:%M %p")(d.datetime);
+    });
+    console.log(mockData);
     render(mockData);
   }, [container]);
   return (
