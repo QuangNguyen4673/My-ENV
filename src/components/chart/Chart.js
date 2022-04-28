@@ -1,34 +1,65 @@
 import React, { useRef, useEffect, useState } from "react";
 import data from "./data.csv";
+import * as d3tf from "d3-time-format";
 import * as d3 from "d3";
 const mockData = [
   {
     sun: "40",
-    dateTime: "18:00",
+    dateTime: "1995-12-17T18:00:00",
   },
   {
     sun: "0",
-    dateTime: "24:00",
+    dateTime: "1995-12-17T24:00:00",
   },
   {
     sun: "40",
-    dateTime: "6:00",
+    dateTime: "1995-12-18T06:00:00",
   },
   {
     sun: "100",
-    dateTime: "12:00",
+    dateTime: "1995-12-18T12:00:00",
   },
   {
     sun: "40",
-    dateTime: "18:00",
+    dateTime: "1995-12-18T18:00:00",
   },
   {
     sun: "0",
-    dateTime: "24:00",
+    dateTime: "1995-12-18T24:00:00",
+  },
+  {
+    sun: "40",
+    dateTime: "1995-12-19T06:00:00",
+  },
+  {
+    sun: "100",
+    dateTime: "1995-12-19T12:00:00",
+  },
+  {
+    sun: "40",
+    dateTime: "1995-12-19T18:00:00",
+  },
+  {
+    sun: "0",
+    dateTime: "1995-12-19T24:00:00",
+  },
+  {
+    sun: "40",
+    dateTime: "1995-12-20T06:00:00",
+  },
+  {
+    sun: "100",
+    dateTime: "1995-12-20T12:00:00",
+  },
+  {
+    sun: "40",
+    dateTime: "1995-12-20T18:00:00",
+  },
+  {
+    sun: "0",
+    dateTime: "1995-12-20T24:00:00",
   },
 ];
-const exUrl =
-  "https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv";
 export default function Chart() {
   const container = useRef(null);
   useEffect(() => {
@@ -40,6 +71,7 @@ export default function Chart() {
       const innerWidth = width - margin.left - margin.right;
       const innerHeight = height - margin.top - margin.bottom;
 
+      const formatDateTime = d3.timeFormat("%I:%M %p");
       const x = d3
         .scaleTime()
         .domain(
@@ -48,6 +80,10 @@ export default function Chart() {
           })
         )
         .range([0, innerWidth]);
+      /* .tickFormat((d) => {
+         
+          return formatDateTime(d);
+        }); */
 
       const y = d3
         .scaleLinear()
@@ -69,26 +105,27 @@ export default function Chart() {
       g.append("path")
         .datum(data)
         .attr("fill", "none")
-        .attr("stroke", "red")
+        .attr("stroke", "orange")
         .attr("stroke-width", 1.5)
         .attr(
           "d",
           d3
             .line()
-            .x((d) => x(d.date))
-            .y((d) => y(d.value))
+            .x((d) => x(d.dateTime))
+            .y((d) => y(d.sun))
             .curve(d3.curveNatural)
         );
     };
     mockData.forEach((d) => {
-      d.dateTime = d3.timeFormat("%H:%M %p")(d.datetime);
+      d.dateTime = new Date(d.dateTime);
     });
-    console.log(mockData);
     render(mockData);
   }, [container]);
   return (
     <>
-      <svg width="800" height="400" ref={container}></svg>
+      <div className="weather-chart">
+        <svg width="3000" height="400" ref={container}></svg>
+      </div>
     </>
   );
 }
