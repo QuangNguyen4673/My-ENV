@@ -136,21 +136,18 @@ export default function Chart() {
         )
       //Night
 
-      /*    g.append("g")
+      g.append("g")
         .selectAll("rect")
         .data(data)
         .join("rect")
         .attr("x", (d, i) => {
-          if (data[i].sun <= 2 && data[i + 1].sun <= 2) {
+          if (+data[i].sun <= 2 && +data[i + 1]?.sun <= 2) {
             return x(d.dateTime)
           }
         })
         .attr("y", 0)
         .attr("height", innerHeight)
         .attr("width", "100")
-        .attr("ry", "3")
-        .attr("ry", "3")
-        .attr("transform", "translate(-5,-25)") */
       //Title
       const title = g.append("g")
       title
