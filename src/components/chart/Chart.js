@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from "react"
+import * as d3tf from "d3-time-format"
 import * as d3 from "d3"
 const mockData = [
   {
@@ -72,6 +73,7 @@ const mockData = [
     dateTime: "1995-12-20T24:00:00",
   },
 ]
+
 export default function Chart() {
   const container = useRef(null)
   useEffect(() => {
@@ -82,6 +84,9 @@ export default function Chart() {
       const margin = { top: 30, right: 30, bottom: 30, left: 30 }
       const innerWidth = width - margin.left - margin.right
       const innerHeight = height - margin.top - margin.bottom
+      const g = svg
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`)
       const x = d3
         .scaleTime()
         .domain(
@@ -101,19 +106,6 @@ export default function Chart() {
         ])
         .range([innerHeight, 0])
 
-      const g = svg
-        .append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`)
-
-      const xAxis = d3
-        .axisBottom(x)
-        .tickFormat((d) => d3.timeFormat("%-I%p")(d))
-      const yAxis = d3.axisLeft(y)
-
-      g.append("g")
-        .attr("transform", `translate(0, ${innerHeight})`)
-        .call(xAxis)
-      g.append("g").call(yAxis)
       //Tide
       g.append("path")
         .datum(data)
@@ -128,14 +120,6 @@ export default function Chart() {
             .y1((d) => y(d.tide))
             .curve(d3.curveBasis)
         )
-      /* g.selectAll("text")
-        .datum(data)
-        .join("text")
-        .attr("x", (d) => x(d.dateTime))
-        .attr("y", (d) => y(d.tide))
-        .attr("dy", "-0.5em")
-        .attr("text-anchor", "middle")
-        .text((d) => d.dateTime) */
       //Sun
       g.append("path")
         .datum(data)
@@ -150,6 +134,23 @@ export default function Chart() {
             .y((d) => y(d.sun))
             .curve(d3.curveNatural)
         )
+      //Night
+
+      /*    g.append("g")
+        .selectAll("rect")
+        .data(data)
+        .join("rect")
+        .attr("x", (d, i) => {
+          if (data[i].sun <= 2 && data[i + 1].sun <= 2) {
+            return x(d.dateTime)
+          }
+        })
+        .attr("y", 0)
+        .attr("height", innerHeight)
+        .attr("width", "100")
+        .attr("ry", "3")
+        .attr("ry", "3")
+        .attr("transform", "translate(-5,-25)") */
       //Title
       const title = g.append("g")
       title
@@ -169,10 +170,54 @@ export default function Chart() {
         .attr("x", 50)
         .attr("y", 0 - margin.top / 2)
         .text("Sunrise & Sunset")
+      //Badge
+      g.append("g")
+        .selectAll("rect")
+        .data(data)
+        .join("rect")
+        .attr("class", "badge")
+        .attr("x", (d) => x(d.dateTime))
+        .attr("y", (d) => y(d.tide))
+        .attr("ry", "3")
+        .attr("ry", "3")
+        .attr("transform", "translate(-5,-25)")
+      g.append("g")
+        .selectAll("text")
+        .data(data)
+        .join("text")
+        .attr("class", "badge-text")
+        .attr("x", (d) => x(d.dateTime))
+        .attr("y", (d) => y(d.tide))
+        .text((d) => d.tide + " m")
+        .style("font-weight", "bold")
+        .style("font-size", "1.1rem")
+        .style("letter-spacing", "-2")
+      g.append("g")
+        .selectAll("text")
+        .data(data)
+        .join("text")
+        .attr("class", "badge-text")
+        .attr("x", (d) => x(d.dateTime))
+        .attr("y", (d) => y(d.tide))
+        .text((d) => d3.timeFormat("%-I%p")(d.dateTime))
+        .attr("transform", "translate(0,18)")
+        .style("font-size", "0.9rem")
+
+      const xAxis = d3
+        .axisBottom(x)
+        .tickFormat((d) => d3.timeFormat("%-I%p")(d))
+      const yAxis = d3.axisLeft(y)
+
+      g.append("g")
+        .attr("transform", `translate(0, ${innerHeight})`)
+        .call(xAxis)
+      g.append("g").call(yAxis)
     }
+
     mockData.forEach((d) => {
       d.dateTime = new Date(d.dateTime)
-      console.log(d3.timeFormat("%-I%p")(new Date(d.dateTime)))
+      /*  d.sun = +d.sun
+      d.sun = +d.tide */
     })
     render(mockData)
   }, [container])
