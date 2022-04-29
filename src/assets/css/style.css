@@ -54,6 +54,7 @@ body {
   display: flex;
   justify-content: center;
   padding: 0 50px;
+  margin-bottom: 40px;
 }
 .operation-item {
   display: flex;
@@ -103,8 +104,22 @@ body {
 }
 
 .weather-chart {
+  background-color: white;
+  padding: 20px;
   max-width: 100vw;
   overflow-x: auto;
+}
+
+path.domain {
+  stroke: black;
+}
+
+.tick text {
+  fill: black;
+}
+
+.tide {
+  fill: rgb(148, 223, 246);
 }
 
 /*# sourceMappingURL=style.css.map */

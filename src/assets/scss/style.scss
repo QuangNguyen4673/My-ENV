@@ -61,6 +61,7 @@ body {
   display: flex;
   justify-content: center;
   padding: $global-padding;
+  margin-bottom: 40px;
   &-item {
     display: flex;
     flex-direction: column;
@@ -112,6 +113,20 @@ body {
   }
 }
 .weather-chart {
+  background-color: white;
+  padding: 20px;
   max-width: 100vw;
   overflow-x: auto;
 }
+
+path.domain {
+  stroke: black;
+}
+.tick text {
+  fill: black;
+}
+
+.tide {
+  fill: rgb(148, 223, 246);
+}
+//148 223 246
