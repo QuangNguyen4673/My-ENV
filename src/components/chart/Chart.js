@@ -109,11 +109,12 @@ export default function Chart() {
         .axisBottom(x)
         .tickFormat((d) => d3.timeFormat("%-I%p")(d))
       const yAxis = d3.axisLeft(y)
+
       g.append("g")
         .attr("transform", `translate(0, ${innerHeight})`)
         .call(xAxis)
-
       g.append("g").call(yAxis)
+      //Tide
       g.append("path")
         .datum(data)
         .attr("fill", "none")
@@ -127,6 +128,15 @@ export default function Chart() {
             .y1((d) => y(d.tide))
             .curve(d3.curveBasis)
         )
+      /* g.selectAll("text")
+        .datum(data)
+        .join("text")
+        .attr("x", (d) => x(d.dateTime))
+        .attr("y", (d) => y(d.tide))
+        .attr("dy", "-0.5em")
+        .attr("text-anchor", "middle")
+        .text((d) => d.dateTime) */
+      //Sun
       g.append("path")
         .datum(data)
         .attr("fill", "none")
@@ -140,16 +150,25 @@ export default function Chart() {
             .y((d) => y(d.sun))
             .curve(d3.curveNatural)
         )
-      const textG = g
-        .append("g")
-        .attr("x", margin.left)
+      //Title
+      const title = g.append("g")
+      title
+        .append("text")
+        .attr("class", "tide")
+        .attr("x", 0)
         .attr("y", 0 - margin.top / 2)
-      textG.append("text").attr("class", "foo").text("Tide Sunrise & Sunset")
-
-      textG.append("text").text("hello")
-
-      const foo = d3.select(".foo")
-      console.log(foo.attr("width"))
+        .text("Tide")
+      title
+        .append("path")
+        .attr("d", d3.symbol())
+        .attr("fill", "rgb(203,203,203)")
+        .attr("transform", "translate(40,-20)")
+      title
+        .append("text")
+        .attr("class", "sun")
+        .attr("x", 50)
+        .attr("y", 0 - margin.top / 2)
+        .text("Sunrise & Sunset")
     }
     mockData.forEach((d) => {
       d.dateTime = new Date(d.dateTime)
