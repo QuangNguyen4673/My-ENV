@@ -81,7 +81,7 @@ export default function Chart() {
       const svg = d3.select(container.current)
       const width = +svg.attr("width")
       const height = +svg.attr("height")
-      const margin = { top: 30, right: 30, bottom: 30, left: 30 }
+      const margin = { top: 30, right: 30, bottom: 30, left: 40 }
       const innerWidth = width - margin.left - margin.right
       const innerHeight = height - margin.top - margin.bottom
       const g = svg
@@ -96,13 +96,23 @@ export default function Chart() {
         )
         .range([0, innerWidth])
 
-      const y = d3
+      const ySun = d3
         .scaleLinear()
         .domain([
           0,
           d3.max(data, function (d) {
             return +d.sun
           }),
+        ])
+        .range([innerHeight, 0])
+
+      const yTide = d3
+        .scaleLinear()
+        .domain([
+          0,
+          d3.max(data, function (d) {
+            return +d.tide
+          }) + 1,
         ])
         .range([innerHeight, 0])
 
@@ -117,7 +127,7 @@ export default function Chart() {
             .area()
             .x((d) => x(d.dateTime))
             .y0(innerHeight)
-            .y1((d) => y(d.tide))
+            .y1((d) => yTide(d.tide))
             .curve(d3.curveBasis)
         )
       //Sun
@@ -131,79 +141,65 @@ export default function Chart() {
           d3
             .line()
             .x((d) => x(d.dateTime))
-            .y((d) => y(d.sun))
+            .y((d) => ySun(d.sun))
             .curve(d3.curveNatural)
         )
       //Night
-
+      const nightCondition = data.filter(
+        (d, i) => +d.sun <= 2 && +data[i + 1]?.sun <= 2
+      )
       g.append("g")
         .selectAll("rect")
-        .data(data)
+        .data(nightCondition)
         .join("rect")
-        .attr("x", (d, i) => {
-          if (+data[i].sun <= 2 && +data[i + 1]?.sun <= 2) {
-            return x(d.dateTime)
-          }
-        })
-        .attr("y", 0)
+        .attr("x", (d) => x(d.dateTime))
         .attr("height", innerHeight)
-        .attr("width", "100")
+        .attr("width", innerWidth / (data.length - 1))
+        .attr("opacity", 0.1)
       //Title
-      const title = g.append("g")
+      const title = g
+        .append("g")
+        .attr("transform", `translate(${0},${0 - margin.top / 2})`)
+      title.append("text").attr("class", "tide").text("Tide")
       title
-        .append("text")
-        .attr("class", "tide")
-        .attr("x", 0)
-        .attr("y", 0 - margin.top / 2)
-        .text("Tide")
-      title
-        .append("path")
-        .attr("d", d3.symbol())
+        .append("circle")
+        .attr("r", 5)
         .attr("fill", "rgb(203,203,203)")
-        .attr("transform", "translate(40,-20)")
+        .attr("cx", 40)
+        .attr("cy", -5)
       title
         .append("text")
         .attr("class", "sun")
         .attr("x", 50)
-        .attr("y", 0 - margin.top / 2)
         .text("Sunrise & Sunset")
       //Badge
-      g.append("g")
-        .selectAll("rect")
-        .data(data)
-        .join("rect")
-        .attr("class", "badge")
-        .attr("x", (d) => x(d.dateTime))
-        .attr("y", (d) => y(d.tide))
-        .attr("ry", "3")
-        .attr("ry", "3")
-        .attr("transform", "translate(-5,-25)")
-      g.append("g")
-        .selectAll("text")
-        .data(data)
-        .join("text")
+      const badge = g.append("g").selectAll("g").data(data).join("g")
+      badge.attr(
+        "transform",
+        (d) => `translate(${x(d.dateTime)},${yTide(d.tide) - 20})`
+      )
+      badge.append("rect").attr("class", "badge").attr("ry", "3")
+      badge
+        .append("text")
         .attr("class", "badge-text")
-        .attr("x", (d) => x(d.dateTime))
-        .attr("y", (d) => y(d.tide))
         .text((d) => d.tide + " m")
+        .attr("transform", `translate(2,25)`)
         .style("font-weight", "bold")
         .style("font-size", "1.1rem")
-        .style("letter-spacing", "-2")
-      g.append("g")
-        .selectAll("text")
-        .data(data)
-        .join("text")
+        .style("letter-spacing", "-1")
+      badge
+        .append("text")
         .attr("class", "badge-text")
-        .attr("x", (d) => x(d.dateTime))
-        .attr("y", (d) => y(d.tide))
         .text((d) => d3.timeFormat("%-I%p")(d.dateTime))
-        .attr("transform", "translate(0,18)")
+        .attr("transform", "translate(2,45)")
         .style("font-size", "0.9rem")
 
       const xAxis = d3
         .axisBottom(x)
         .tickFormat((d) => d3.timeFormat("%-I%p")(d))
-      const yAxis = d3.axisLeft(y)
+        .tickSize(0)
+        .tickPadding(15)
+      const yAxis = d3.axisLeft(yTide).tickSize(0).tickPadding(10)
 
       g.append("g")
         .attr("transform", `translate(0, ${innerHeight})`)
@@ -213,9 +209,10 @@ export default function Chart() {
 
     mockData.forEach((d) => {
       d.dateTime = new Date(d.dateTime)
-      /*  d.sun = +d.sun
-      d.sun = +d.tide */
+      d.sun = +d.sun
+      d.tide = +d.tide
     })
+    console.log(mockData)
     render(mockData)
   }, [container])
   return (

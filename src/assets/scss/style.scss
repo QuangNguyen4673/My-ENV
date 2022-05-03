@@ -124,6 +124,7 @@ path.domain {
 }
 .tick text {
   fill: black;
+  font-size: 14px;
 }
 
 .tide {
@@ -138,6 +139,8 @@ path.domain {
   fill: white;
   opacity: 0.5;
   &-text {
+    /* font-weight: bold;
+    font-size: 1.1rem; */
     fill: rgb(2, 110, 155);
   }
 }
