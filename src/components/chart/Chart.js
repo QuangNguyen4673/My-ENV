@@ -136,6 +136,7 @@ export default function Chart() {
         .attr("fill", "none")
         .attr("stroke", "orange")
         .attr("stroke-width", 1.5)
+        .style("stroke-dasharray", "3, 3")
         .attr(
           "d",
           d3
@@ -200,6 +201,55 @@ export default function Chart() {
         .tickSize(0)
         .tickPadding(15)
       const yAxis = d3.axisLeft(yTide).tickSize(0).tickPadding(10)
+
+      const bisect = d3.bisector((d) => d.dateTime).left
+      const focus = g
+        .append("g")
+        .append("circle")
+        .style("fill", "none")
+        .attr("stroke", "black")
+        .attr("r", 8.5)
+        .style("opacity", 0)
+
+      // Create the text that travels along the curve of chart
+      const focusText = g
+        .append("g")
+        .append("text")
+        .style("opacity", 0)
+        .attr("alignment-baseline", "middle")
+
+      g.append("rect")
+        .style("fill", "none")
+        .style("pointer-events", "all")
+        .attr("width", width)
+        .attr("height", height)
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseout", mouseout)
+
+      function mouseover() {
+        focus.style("opacity", 1)
+        focusText.style("opacity", 1)
+      }
+
+      function mousemove(e) {
+        var x0 = x.invert(d3.pointer(e)[0])
+        var i = bisect(data, x0, 1)
+        let selectedData = data[i]
+        focus
+          .attr("cx", x(selectedData.dateTime))
+          .attr("cy", ySun(selectedData.sun))
+        // focusText
+        //   .html(
+        //     "x:" + selectedData.dateTime + "  -  " + "y:" + selectedData.sun
+        //   )
+        //   .attr("x", x(selectedData.dateTime) + 15)
+        //   .attr("y", ySun(selectedData.sun))
+      }
+      function mouseout() {
+        focus.style("opacity", 0)
+        focusText.style("opacity", 0)
+      }
 
       g.append("g")
         .attr("transform", `translate(0, ${innerHeight})`)
