@@ -1,79 +1,6 @@
 import React, { useRef, useEffect } from "react"
-import * as d3tf from "d3-time-format"
 import * as d3 from "d3"
-import sunIcon from "../../assets/Images/icons8-sun.svg"
-const mockData = [
-  {
-    sun: "2",
-    tide: "2.3",
-    dateTime: "1995-12-17T18:00:00",
-  },
-  {
-    sun: "1",
-    tide: "3.1",
-    dateTime: "1995-12-17T24:00:00",
-  },
-  {
-    sun: "2",
-    tide: "2.2",
-    dateTime: "1995-12-18T06:00:00",
-  },
-  {
-    sun: "5",
-    tide: "3.1",
-    dateTime: "1995-12-18T12:00:00",
-  },
-  {
-    sun: "2",
-    tide: "2.0",
-    dateTime: "1995-12-18T18:00:00",
-  },
-  {
-    sun: "1",
-    tide: "3.1",
-    dateTime: "1995-12-18T24:00:00",
-  },
-  {
-    sun: "2",
-    tide: "2.2",
-    dateTime: "1995-12-19T06:00:00",
-  },
-  {
-    sun: "5",
-    tide: "3.3",
-    dateTime: "1995-12-19T12:00:00",
-  },
-  {
-    sun: "2",
-    tide: "2.0",
-    dateTime: "1995-12-19T18:00:00",
-  },
-  {
-    sun: "1",
-    tide: "3.1",
-    dateTime: "1995-12-19T24:00:00",
-  },
-  {
-    sun: "2",
-    tide: "2.3",
-    dateTime: "1995-12-20T06:00:00",
-  },
-  {
-    sun: "5",
-    tide: "3.0",
-    dateTime: "1995-12-20T12:00:00",
-  },
-  {
-    sun: "2",
-    tide: "2.1",
-    dateTime: "1995-12-20T18:00:00",
-  },
-  {
-    sun: "1",
-    tide: "3.0",
-    dateTime: "1995-12-20T24:00:00",
-  },
-]
+import mockData from "./data"
 
 export default function Chart() {
   const container = useRef(null)
@@ -223,13 +150,30 @@ export default function Chart() {
         .attr("width", width)
         .attr("height", height)
 
+      const initScrollLeft = 300
+      const xBar = g
+        .append("g")
+        .attr("transform", `translate(0, ${innerHeight - 30})`)
+      xBar
+        .append("rect")
+        .attr("width", innerWidth)
+        .attr("height", 30)
+        .attr("fill", "rgb(232,242,254)")
+
+      const xBarText = xBar
+        .append("text")
+        .attr("x", initScrollLeft)
+        .attr("y", 30)
+        .text("hello")
+
       const bisect = d3.bisector((d) => d.dateTime).left
 
       let lastKnownScrollPosition = 0
       let ticking = false
 
       function setSunPosition(scrollPos) {
-        var x0 = x.invert(scrollPos + 300)
+        xBarText.attr("x", scrollPos + initScrollLeft)
+        var x0 = x.invert(scrollPos + initScrollLeft)
         var i = bisect(data, x0, 1)
         let selectedData = data[i]
         focus
@@ -256,7 +200,6 @@ export default function Chart() {
         .call(xAxis)
       g.append("g").call(yAxis)
     }
-
     mockData.forEach((d) => {
       d.dateTime = new Date(d.dateTime)
       d.sun = +d.sun
