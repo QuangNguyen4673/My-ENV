@@ -46,7 +46,7 @@ export default function Chart() {
 
       //Tide area
       g.append("path")
-        .datum(data)
+        .datum(data.filter((d) => d.tide))
         .attr("fill", "none")
         .attr("class", "tide")
         .attr(
@@ -74,7 +74,7 @@ export default function Chart() {
             .curve(d3.curveNatural)
         )
       //Night rect
-      const nightCondition = data.filter(
+      /*   const nightCondition = data.filter(
         (d, i) => +d.sun <= 2 && +data[i + 1]?.sun <= 2
       )
       g.append("g")
@@ -84,7 +84,7 @@ export default function Chart() {
         .attr("x", (d) => x(d.dateTime))
         .attr("height", innerHeight)
         .attr("width", innerWidth / (data.length - 1))
-        .attr("opacity", 0.1)
+        .attr("opacity", 0.1) */
       //Title
       const title = g
         .append("g")
@@ -102,7 +102,12 @@ export default function Chart() {
         .attr("x", 50)
         .text("Sunrise & Sunset")
       //Badge
-      const badge = g.append("g").selectAll("g").data(data).join("g")
+      const badge = g
+        .append("g")
+        .selectAll("g")
+        .data(data.filter((d) => d.tide))
+        .join("g")
+      console.log(data.filter((d) => d.tide))
       badge.attr(
         "transform",
         (d) => `translate(${x(d.dateTime)},${yTide(d.tide) - 20})`
