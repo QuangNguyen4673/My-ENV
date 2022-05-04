@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react"
 import * as d3tf from "d3-time-format"
 import * as d3 from "d3"
+import sunIcon from "../../assets/Images/icons8-sun.svg"
 const mockData = [
   {
     sun: "2",
@@ -8,7 +9,7 @@ const mockData = [
     dateTime: "1995-12-17T18:00:00",
   },
   {
-    sun: "0",
+    sun: "1",
     tide: "3.1",
     dateTime: "1995-12-17T24:00:00",
   },
@@ -28,7 +29,7 @@ const mockData = [
     dateTime: "1995-12-18T18:00:00",
   },
   {
-    sun: "0",
+    sun: "1",
     tide: "3.1",
     dateTime: "1995-12-18T24:00:00",
   },
@@ -48,7 +49,7 @@ const mockData = [
     dateTime: "1995-12-19T18:00:00",
   },
   {
-    sun: "0",
+    sun: "1",
     tide: "3.1",
     dateTime: "1995-12-19T24:00:00",
   },
@@ -68,7 +69,7 @@ const mockData = [
     dateTime: "1995-12-20T18:00:00",
   },
   {
-    sun: "0",
+    sun: "1",
     tide: "3.0",
     dateTime: "1995-12-20T24:00:00",
   },
@@ -116,7 +117,7 @@ export default function Chart() {
         ])
         .range([innerHeight, 0])
 
-      //Tide
+      //Tide area
       g.append("path")
         .datum(data)
         .attr("fill", "none")
@@ -130,7 +131,7 @@ export default function Chart() {
             .y1((d) => yTide(d.tide))
             .curve(d3.curveBasis)
         )
-      //Sun
+      //Sun path
       g.append("path")
         .datum(data)
         .attr("fill", "none")
@@ -145,7 +146,7 @@ export default function Chart() {
             .y((d) => ySun(d.sun))
             .curve(d3.curveNatural)
         )
-      //Night
+      //Night rect
       const nightCondition = data.filter(
         (d, i) => +d.sun <= 2 && +data[i + 1]?.sun <= 2
       )
@@ -194,62 +195,61 @@ export default function Chart() {
         .text((d) => d3.timeFormat("%-I%p")(d.dateTime))
         .attr("transform", "translate(2,45)")
         .style("font-size", "0.9rem")
-
+      //Axis
       const xAxis = d3
         .axisBottom(x)
         .tickFormat((d) => d3.timeFormat("%-I%p")(d))
         .tickSize(0)
         .tickPadding(15)
       const yAxis = d3.axisLeft(yTide).tickSize(0).tickPadding(10)
-
-      const bisect = d3.bisector((d) => d.dateTime).left
+      //Moving sun
+      //Sun style
       const focus = g
         .append("g")
-        .append("circle")
-        .style("fill", "none")
-        .attr("stroke", "black")
-        .attr("r", 8.5)
-        .style("opacity", 0)
-
-      // Create the text that travels along the curve of chart
-      const focusText = g
-        .append("g")
-        .append("text")
-        .style("opacity", 0)
-        .attr("alignment-baseline", "middle")
+        .selectAll("circle")
+        .data([null, null])
+        .join("circle")
+        .style("fill", (d, i) => (i === 0 ? "orange" : "none"))
+        .attr("r", (d, i) => (i === 0 ? 8 : 12))
+        .attr("cx", x(data[2].dateTime))
+        .attr("cy", ySun(data[2].sun))
+        .attr("stroke", "orange")
+        .attr("stroke-width", "2px")
+        .attr("stroke-dasharray", (d, i) => i === 1 && "2,7.4")
 
       g.append("rect")
         .style("fill", "none")
         .style("pointer-events", "all")
         .attr("width", width)
         .attr("height", height)
-        .on("mouseover", mouseover)
-        .on("mousemove", mousemove)
-        .on("mouseout", mouseout)
 
-      function mouseover() {
-        focus.style("opacity", 1)
-        focusText.style("opacity", 1)
-      }
+      const bisect = d3.bisector((d) => d.dateTime).left
 
-      function mousemove(e) {
-        var x0 = x.invert(d3.pointer(e)[0])
+      let lastKnownScrollPosition = 0
+      let ticking = false
+
+      function setSunPosition(scrollPos) {
+        var x0 = x.invert(scrollPos + 300)
         var i = bisect(data, x0, 1)
         let selectedData = data[i]
         focus
           .attr("cx", x(selectedData.dateTime))
           .attr("cy", ySun(selectedData.sun))
-        // focusText
-        //   .html(
-        //     "x:" + selectedData.dateTime + "  -  " + "y:" + selectedData.sun
-        //   )
-        //   .attr("x", x(selectedData.dateTime) + 15)
-        //   .attr("y", ySun(selectedData.sun))
       }
-      function mouseout() {
-        focus.style("opacity", 0)
-        focusText.style("opacity", 0)
-      }
+      const weatherChart = document.querySelector(".weather-chart")
+
+      weatherChart.addEventListener("scroll", function (e) {
+        lastKnownScrollPosition = weatherChart.scrollLeft
+
+        if (!ticking) {
+          window.requestAnimationFrame(function () {
+            setSunPosition(lastKnownScrollPosition)
+            ticking = false
+          })
+
+          ticking = true
+        }
+      })
 
       g.append("g")
         .attr("transform", `translate(0, ${innerHeight})`)
@@ -262,13 +262,12 @@ export default function Chart() {
       d.sun = +d.sun
       d.tide = +d.tide
     })
-    console.log(mockData)
     render(mockData)
   }, [container])
   return (
     <>
       <div className="weather-chart">
-        <svg width="3000" height="400" ref={container}></svg>
+        <svg width="5000" height="400" ref={container}></svg>
       </div>
     </>
   )
