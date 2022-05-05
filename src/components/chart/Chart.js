@@ -155,7 +155,7 @@ export default function Chart() {
         .attr("width", width)
         .attr("height", height)
 
-      const initScrollLeft = 300
+      const initScrollLeft = 420
       const xBar = g
         .append("g")
         .attr("transform", `translate(0, ${innerHeight - 30})`)
@@ -165,11 +165,47 @@ export default function Chart() {
         .attr("height", 30)
         .attr("fill", "rgb(232,242,254)")
 
-      const xBarText = xBar
+      const xBarIndicatorG = xBar.append("g")
+      //add triangle
+      xBarIndicatorG
+        .append("path")
+        .attr("d", d3.symbol().type(d3.symbolTriangle).size(100))
+        .attr("fill", "rgb(232,242,254)")
+      //add text
+      const xBarIndicatorText = xBarIndicatorG
         .append("text")
-        .attr("x", initScrollLeft)
         .attr("y", 30)
-        .text("hello")
+        .attr("text-anchor", "middle")
+
+      const xBarIndicatorLineG = xBarIndicatorG.append("g")
+
+      const linearGradient = xBarIndicatorLineG
+        .append("defs")
+        .append("linearGradient")
+        .attr("id", "foo")
+        .attr("x1", "0")
+        .attr("y1", "0")
+        .attr("x2", "0%")
+        .attr("y2", "100%")
+        .attr("gradientUnits", "userSpaceOnUse")
+
+      linearGradient
+        .append("stop")
+        .attr("stop-color", "red")
+        .attr("offset", "0")
+      linearGradient
+        .append("stop")
+        .attr("stop-color", "black")
+        .attr("offset", "1")
+
+      xBarIndicatorLineG
+        .append("line")
+        .attr("x1", 0)
+        .attr("y1", 0)
+        .attr("x2", 0)
+        .attr("y2", -200)
+        .attr("stroke", "url(#foo)")
+        .attr("stroke-width", 20)
 
       const bisect = d3.bisector((d) => d.dateTime).left
 
@@ -177,10 +213,14 @@ export default function Chart() {
       let ticking = false
 
       function setSunPosition(scrollPos) {
-        xBarText.attr("x", scrollPos + initScrollLeft)
         var x0 = x.invert(scrollPos + initScrollLeft)
         var i = bisect(data, x0, 1)
         let selectedData = data[i]
+        xBarIndicatorG.attr(
+          "transform",
+          `translate(${x(selectedData.dateTime)},0)`
+        )
+        xBarIndicatorText.text(d3.timeFormat("%-I:%M%p")(selectedData.dateTime))
         focus
           .attr("cx", x(selectedData.dateTime))
           .attr("cy", ySun(selectedData.sun))
@@ -215,7 +255,7 @@ export default function Chart() {
   return (
     <>
       <div className="weather-chart">
-        <svg width="5000" height="400" ref={container}></svg>
+        <svg width="6000" height="400" ref={container}></svg>
       </div>
     </>
   )
