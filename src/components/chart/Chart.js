@@ -136,7 +136,7 @@ export default function Chart() {
       const yAxis = d3.axisLeft(yTide).tickSize(0).tickPadding(10)
       //Moving sun
       //Sun style
-      const focus = g
+      const movingObject = g
         .append("g")
         .selectAll("circle")
         .data([null, null])
@@ -166,7 +166,25 @@ export default function Chart() {
         .attr("height", xBarHeight)
         .attr("fill", "rgb(232,242,254)")
 
+      // add important text
+      const importantText = data.filter(
+        (d, i) =>
+          (d.sun <= 1 && data[i - 1].sun >= 1) ||
+          (d.sun <= 1 && data[i + 1]?.sun >= 1)
+      )
+
+      xBar
+        .selectAll("text")
+        .data(importantText)
+        .join("text")
+        .text((d) => d3.timeFormat("%-I:%M%p")(d.dateTime))
+        .attr("x", (d, i) => x(d.dateTime))
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "text-before-edge")
+
+      //Moving indicator
       const xBarIndicatorG = xBar.append("g")
+
       //add triangle
       xBarIndicatorG
         .append("path")
@@ -175,12 +193,23 @@ export default function Chart() {
       //add bottom text
       const xBarBottomText = xBarIndicatorG
         .append("text")
-        .attr("y", 20)
+        /* .attr("y", 20)
+        .attr("text-anchor", "middle") */
         .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "text-before-edge")
+      //add top text
       const xBarTopText = xBarIndicatorG
         .append("text")
         .attr("y", xBarHeight - innerHeight)
         .attr("text-anchor", "middle")
+
+      //add moon
+      const moon = xBarIndicatorG
+        .append("circle")
+        .attr("cy", 100 + xBarHeight - innerHeight)
+        .attr("fill", "red")
+        .attr("r", "5")
+        .attr("opacity", "0")
 
       const xBarIndicatorLineG = xBarIndicatorG.append("g")
       const linearGradient = xBarIndicatorLineG
@@ -226,7 +255,13 @@ export default function Chart() {
         )
         xBarBottomText.text(d3.timeFormat("%-I:%M%p")(selectedData.dateTime))
         xBarTopText.text(dateMonth(selectedData.dateTime))
-        focus
+        console.log(selectedData.sun)
+        if (selectedData.sun <= 1) {
+          moon.attr("opacity", "1")
+        } else {
+          moon.attr("opacity", "0")
+        }
+        movingObject
           .attr("cx", x(selectedData.dateTime))
           .attr("cy", ySun(selectedData.sun))
       }
