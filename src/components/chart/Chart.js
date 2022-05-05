@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react"
 import * as d3 from "d3"
 import mockData from "./data"
+import { dateMonth, suffix } from "../../utils"
 
 export default function Chart() {
   const container = useRef(null)
@@ -9,7 +10,7 @@ export default function Chart() {
       const svg = d3.select(container.current)
       const width = +svg.attr("width")
       const height = +svg.attr("height")
-      const margin = { top: 30, right: 30, bottom: 30, left: 40 }
+      const margin = { top: 30, right: 30, bottom: 0, left: 0 }
       const innerWidth = width - margin.left - margin.right
       const innerHeight = height - margin.top - margin.bottom
       const g = svg
@@ -74,8 +75,8 @@ export default function Chart() {
             .curve(d3.curveNatural)
         )
       //Night rect
-      /*   const nightCondition = data.filter(
-        (d, i) => +d.sun <= 2 && +data[i + 1]?.sun <= 2
+      const nightCondition = data.filter(
+        (d, i) => +d.sun <= 1 && +data[i + 1]?.sun <= 1
       )
       g.append("g")
         .selectAll("rect")
@@ -84,7 +85,7 @@ export default function Chart() {
         .attr("x", (d) => x(d.dateTime))
         .attr("height", innerHeight)
         .attr("width", innerWidth / (data.length - 1))
-        .attr("opacity", 0.1) */
+        .attr("opacity", 0.1)
       //Title
       const title = g
         .append("g")
@@ -107,7 +108,6 @@ export default function Chart() {
         .selectAll("g")
         .data(data.filter((d) => d.tide))
         .join("g")
-      console.log(data.filter((d) => d.tide))
       badge.attr(
         "transform",
         (d) => `translate(${x(d.dateTime)},${yTide(d.tide) - 20})`
@@ -156,13 +156,14 @@ export default function Chart() {
         .attr("height", height)
 
       const initScrollLeft = 420
+      const xBarHeight = 150
       const xBar = g
         .append("g")
-        .attr("transform", `translate(0, ${innerHeight - 30})`)
+        .attr("transform", `translate(0, ${innerHeight - xBarHeight})`)
       xBar
         .append("rect")
         .attr("width", innerWidth)
-        .attr("height", 30)
+        .attr("height", xBarHeight)
         .attr("fill", "rgb(232,242,254)")
 
       const xBarIndicatorG = xBar.append("g")
@@ -171,18 +172,21 @@ export default function Chart() {
         .append("path")
         .attr("d", d3.symbol().type(d3.symbolTriangle).size(100))
         .attr("fill", "rgb(232,242,254)")
-      //add text
-      const xBarIndicatorText = xBarIndicatorG
+      //add bottom text
+      const xBarBottomText = xBarIndicatorG
         .append("text")
-        .attr("y", 30)
+        .attr("y", 20)
+        .attr("text-anchor", "middle")
+      const xBarTopText = xBarIndicatorG
+        .append("text")
+        .attr("y", xBarHeight - innerHeight)
         .attr("text-anchor", "middle")
 
       const xBarIndicatorLineG = xBarIndicatorG.append("g")
-
       const linearGradient = xBarIndicatorLineG
         .append("defs")
         .append("linearGradient")
-        .attr("id", "foo")
+        .attr("id", "e")
         .attr("x1", "0")
         .attr("y1", "0")
         .attr("x2", "0%")
@@ -191,11 +195,11 @@ export default function Chart() {
 
       linearGradient
         .append("stop")
-        .attr("stop-color", "red")
+        .attr("stop-color", "rgb(232, 228, 227)")
         .attr("offset", "0")
       linearGradient
         .append("stop")
-        .attr("stop-color", "black")
+        .attr("stop-color", "red")
         .attr("offset", "1")
 
       xBarIndicatorLineG
@@ -203,9 +207,9 @@ export default function Chart() {
         .attr("x1", 0)
         .attr("y1", 0)
         .attr("x2", 0)
-        .attr("y2", -200)
-        .attr("stroke", "url(#foo)")
-        .attr("stroke-width", 20)
+        .attr("y2", -100)
+        .attr("stroke", "url(#e)")
+        .attr("stroke-width", 1)
 
       const bisect = d3.bisector((d) => d.dateTime).left
 
@@ -213,14 +217,15 @@ export default function Chart() {
       let ticking = false
 
       function setSunPosition(scrollPos) {
-        var x0 = x.invert(scrollPos + initScrollLeft)
-        var i = bisect(data, x0, 1)
+        let x0 = x.invert(scrollPos + initScrollLeft)
+        let i = bisect(data, x0, 1)
         let selectedData = data[i]
         xBarIndicatorG.attr(
           "transform",
           `translate(${x(selectedData.dateTime)},0)`
         )
-        xBarIndicatorText.text(d3.timeFormat("%-I:%M%p")(selectedData.dateTime))
+        xBarBottomText.text(d3.timeFormat("%-I:%M%p")(selectedData.dateTime))
+        xBarTopText.text(dateMonth(selectedData.dateTime))
         focus
           .attr("cx", x(selectedData.dateTime))
           .attr("cy", ySun(selectedData.sun))
@@ -245,6 +250,11 @@ export default function Chart() {
         .call(xAxis)
       g.append("g").call(yAxis)
     }
+    /*  const fooData = mockData.map((d) => {
+      return { ...d, sun: (+d.sun - 0.5).toFixed(2) + "" }
+    })
+    console.log(fooData) */
+
     mockData.forEach((d) => {
       d.dateTime = new Date(d.dateTime)
       d.sun = +d.sun
@@ -255,7 +265,7 @@ export default function Chart() {
   return (
     <>
       <div className="weather-chart">
-        <svg width="6000" height="400" ref={container}></svg>
+        <svg width="8000" height="500" ref={container}></svg>
       </div>
     </>
   )
