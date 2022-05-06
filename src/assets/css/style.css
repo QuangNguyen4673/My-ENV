@@ -56,6 +56,11 @@ body {
   padding: 0 50px;
   margin-bottom: 40px;
 }
+.operation-line {
+  width: 5px;
+  height: 170px;
+  background-image: linear-gradient(rgb(32, 106, 174), #ced4da);
+}
 .operation-item {
   display: flex;
   flex-direction: column;
@@ -65,11 +70,6 @@ body {
   text-align: center;
   max-width: 1000px;
   width: 100%;
-}
-.operation-item:not(:last-child) {
-  border-right: 1px;
-  border-left: 0;
-  border-image: linear-gradient(to bottom, rgb(32, 106, 174), #ced4da) 1 100%;
 }
 .operation-item-header {
   text-transform: uppercase;

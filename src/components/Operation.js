@@ -1,6 +1,6 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import React from "react"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCirclePlus } from "@fortawesome/free-solid-svg-icons"
 
 export default function Operation() {
   return (
@@ -10,17 +10,19 @@ export default function Operation() {
         <div className="psi">23</div>
         <div className="operation-item-description">Good</div>
       </div>
+      <div className="operation-line" />
       <div className="operation-item">
         <div className="operation-item-header">RAIN</div>
-
         <div className="rain">0</div>
         <div className="operation-item-description">mm</div>
       </div>
+      <div className="operation-line" />
       <div className="operation-item">
         <div className="operation-item-header">DENGUE</div>
         <div className="dengue"></div>
         <div className="operation-item-description"></div>
       </div>
+      <div className="operation-line" />
       <div className="operation-item">
         <div className="operation-item-header"></div>
         <div className="add">
@@ -34,5 +36,5 @@ export default function Operation() {
         </div>
       </div>
     </div>
-  );
+  )
 }

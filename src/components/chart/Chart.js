@@ -30,7 +30,7 @@ export default function Chart() {
       const ySun = d3
         .scaleLinear()
         .domain([
-          2.2,
+          2,
           d3.max(data, function (d) {
             return +d.sun
           }),
@@ -286,10 +286,6 @@ export default function Chart() {
         .call(xAxis)
       g.append("g").call(yAxis)
     }
-    /*  const fooData = mockData.map((d) => {
-      return { ...d, sun: (+d.sun - 0.5).toFixed(2) + "" }
-    })
-    console.log(fooData) */
 
     mockData.forEach((d) => {
       d.dateTime = new Date(d.dateTime)
