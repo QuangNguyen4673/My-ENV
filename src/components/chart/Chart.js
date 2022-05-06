@@ -1,7 +1,8 @@
 import React, { useRef, useEffect } from "react"
 import * as d3 from "d3"
 import mockData from "./data"
-import { dateMonth, suffix } from "../../utils"
+import moonIcon from "../../assets/Images/moon.svg"
+import { dateMonth } from "../../utils"
 
 export default function Chart() {
   const container = useRef(null)
@@ -193,8 +194,6 @@ export default function Chart() {
       //add bottom text
       const xBarBottomText = xBarIndicatorG
         .append("text")
-        /* .attr("y", 20)
-        .attr("text-anchor", "middle") */
         .attr("text-anchor", "middle")
         .attr("alignment-baseline", "text-before-edge")
       //add top text
@@ -203,13 +202,15 @@ export default function Chart() {
         .attr("y", xBarHeight - innerHeight)
         .attr("text-anchor", "middle")
 
-      //add moon
+      //add Moon
+      const moonWidth = 30
       const moon = xBarIndicatorG
-        .append("circle")
-        .attr("cy", 100 + xBarHeight - innerHeight)
-        .attr("fill", "red")
-        .attr("r", "5")
-        .attr("opacity", "0")
+        .append("image")
+        .attr("xlink:href", moonIcon)
+        .attr("width", moonWidth)
+        .attr("y", 100 + xBarHeight - innerHeight)
+        .attr("x", -moonWidth / 2)
+        .attr("opacity", 0)
 
       const xBarIndicatorLineG = xBarIndicatorG.append("g")
       const linearGradient = xBarIndicatorLineG
@@ -297,6 +298,7 @@ export default function Chart() {
     })
     render(mockData)
   }, [container])
+
   return (
     <>
       <div className="weather-chart">
