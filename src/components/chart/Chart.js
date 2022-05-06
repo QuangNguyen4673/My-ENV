@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react"
 import * as d3 from "d3"
+//import mockData from "./data-test"
 import mockData from "./data"
 import moonIcon from "../../assets/Images/moon.svg"
 import { dateMonth } from "../../utils"
@@ -29,7 +30,7 @@ export default function Chart() {
       const ySun = d3
         .scaleLinear()
         .domain([
-          0,
+          2.2,
           d3.max(data, function (d) {
             return +d.sun
           }),
@@ -77,7 +78,7 @@ export default function Chart() {
         )
       //Night rect
       const nightCondition = data.filter(
-        (d, i) => +d.sun <= 1 && +data[i + 1]?.sun <= 1
+        (d, i) => +d.sun <= 2 && +data[i + 1]?.sun <= 2
       )
       g.append("g")
         .selectAll("rect")
@@ -157,7 +158,7 @@ export default function Chart() {
         .attr("height", height)
 
       const initScrollLeft = 420
-      const xBarHeight = 150
+      const xBarHeight = 40
       const xBar = g
         .append("g")
         .attr("transform", `translate(0, ${innerHeight - xBarHeight})`)
@@ -168,18 +169,18 @@ export default function Chart() {
         .attr("fill", "rgb(232,242,254)")
 
       // add important text
-      const importantText = data.filter(
+      const DayNightTime = data.filter(
         (d, i) =>
-          (d.sun <= 1 && data[i - 1].sun >= 1) ||
-          (d.sun <= 1 && data[i + 1]?.sun >= 1)
+          (d.sun <= 2 && data[i - 1].sun >= 2) ||
+          (d.sun <= 2 && data[i + 1]?.sun >= 2)
       )
-
       xBar
         .selectAll("text")
-        .data(importantText)
+        .data(DayNightTime)
         .join("text")
         .text((d) => d3.timeFormat("%-I:%M%p")(d.dateTime))
         .attr("x", (d, i) => x(d.dateTime))
+        .attr("fill", "orange")
         .attr("text-anchor", "middle")
         .attr("alignment-baseline", "text-before-edge")
 
@@ -256,8 +257,7 @@ export default function Chart() {
         )
         xBarBottomText.text(d3.timeFormat("%-I:%M%p")(selectedData.dateTime))
         xBarTopText.text(dateMonth(selectedData.dateTime))
-        console.log(selectedData.sun)
-        if (selectedData.sun <= 1) {
+        if (selectedData.sun <= 2) {
           moon.attr("opacity", "1")
         } else {
           moon.attr("opacity", "0")
