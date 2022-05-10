@@ -1,9 +1,9 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
-export default function NavBar() {
+import React from "react"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faBars } from "@fortawesome/free-solid-svg-icons"
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons"
+import { faBell } from "@fortawesome/free-solid-svg-icons"
+export default function Navbar() {
   return (
     <div className="navbar">
       <ul>
@@ -28,5 +28,5 @@ export default function NavBar() {
         </li>
       </ul>
     </div>
-  );
+  )
 }

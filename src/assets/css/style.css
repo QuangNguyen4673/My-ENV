@@ -110,10 +110,6 @@ body {
   overflow-x: auto;
 }
 
-path.domain {
-  stroke: black;
-}
-
 .tick text {
   fill: black;
   font-size: 14px;

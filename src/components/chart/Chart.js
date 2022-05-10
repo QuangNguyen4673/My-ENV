@@ -135,7 +135,11 @@ export default function Chart() {
         .tickFormat((d) => d3.timeFormat("%-I%p")(d))
         .tickSize(0)
         .tickPadding(15)
-      const yAxis = d3.axisLeft(yTide).tickSize(0).tickPadding(10)
+      const yAxis = d3
+        .axisLeft(yTide)
+
+        .tickSize(0)
+        .tickPadding(10)
       //Moving sun
       //Sun style
       const movingObject = g
@@ -284,7 +288,7 @@ export default function Chart() {
       g.append("g")
         .attr("transform", `translate(0, ${innerHeight})`)
         .call(xAxis)
-      g.append("g").call(yAxis)
+      g.append("g").call(yAxis).attr("class", "helllo")
     }
 
     mockData.forEach((d) => {

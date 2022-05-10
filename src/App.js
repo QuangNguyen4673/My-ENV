@@ -1,18 +1,16 @@
-import Chart from "./components/chart/Chart";
-import DashBoard from "./components/DashBoard";
-import NavBar from "./components/NavBar";
-import "./assets/css/style.css";
-import Operation from "./components/Operation";
+import Chart from "./components/Chart/Chart"
+import DashBoard from "./components/Dashboard/DashBoard"
+import Navbar from "./components/Navbar/NavBar"
+import "./assets/css/style.css"
 
 function App() {
   return (
     <>
-      <NavBar />
+      <Navbar />
       <DashBoard />
-      <Operation />
       <Chart />
     </>
-  );
+  )
 }
 
-export default App;
+export default App
