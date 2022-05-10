@@ -38,14 +38,14 @@ body {
   color: #ced4da;
 }
 
-.dashboard {
+.weather-container {
   display: flex;
   justify-content: center;
   align-items: flex-end;
   gap: 50px;
   margin-bottom: 100px;
 }
-.dashboard .weather-info {
+.weather-container .weather-info {
   display: flex;
   gap: 10px;
 }

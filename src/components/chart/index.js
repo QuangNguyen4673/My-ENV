@@ -301,8 +301,13 @@ export default function Chart() {
 
   return (
     <>
-      <div className="weather-chart">
-        <svg width="8000" height="500" ref={container}></svg>
+      <div className="weather-chart" data-testid="weather-chart">
+        <svg
+          data-testid="weather-chart-svg"
+          width="8000"
+          height="500"
+          ref={container}
+        ></svg>
       </div>
     </>
   )

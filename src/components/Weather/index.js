@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCloud } from "@fortawesome/free-solid-svg-icons"
 import { faTemperatureHalf } from "@fortawesome/free-solid-svg-icons"
 import { faDroplet, faCirclePlus } from "@fortawesome/free-solid-svg-icons"
-import { getWeatherStatus } from "../../services/services"
-export default function DashBoard() {
+import { getWeatherStatus } from "../../services/weather"
+export default function Weather() {
   const [weather, setWeather] = useState({})
   const _getStatus = async () => {
     const status = await getWeatherStatus
@@ -15,7 +15,7 @@ export default function DashBoard() {
   }, [])
   return (
     <>
-      <div className="dashboard">
+      <div className="weather-container">
         <FontAwesomeIcon icon={faCloud} color="white" size="4x" />
         <div className="weather">
           <h2 data-testid="weather-status">{weather?.status}</h2>

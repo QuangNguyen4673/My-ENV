@@ -9,7 +9,7 @@ export default function Navbar() {
       <ul>
         <li>
           <a href="\#">
-            <FontAwesomeIcon icon={faBars} color="white" />
+            <FontAwesomeIcon icon={faBars} data-testid="burger" color="white" />
           </a>
         </li>
         <li>

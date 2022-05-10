@@ -1,13 +1,13 @@
-import Chart from "./components/Chart/Chart"
-import DashBoard from "./components/Dashboard/DashBoard"
-import Navbar from "./components/Navbar/NavBar"
+import Chart from "./components/Chart"
+import Weather from "./components/Weather"
+import Navbar from "./components/Navbar"
 import "./assets/css/style.css"
 
 function App() {
   return (
     <>
       <Navbar />
-      <DashBoard />
+      <Weather />
       <Chart />
     </>
   )

@@ -8,6 +8,6 @@ const getWeatherStatus = new Promise((resolve) => {
       psiStatus: "Good",
       rain: 0,
     })
-  }, 300)
+  }, 100)
 })
 export { getWeatherStatus }
