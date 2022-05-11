@@ -1,20 +1,37 @@
 import React, { useRef, useEffect } from "react"
 import * as d3 from "d3"
-//import mockData from "./data-test"
-import mockData from "./data"
 import moonIcon from "../../assets/Images/moon.svg"
 import { dateMonth } from "../../utils"
+import { getWeatherData } from "../../services/weather"
 
 export default function Chart() {
   const container = useRef(null)
+  const _getWeatherData = async () => {
+    const weatherData = await getWeatherData
+    return weatherData
+  }
   useEffect(() => {
-    const render = (data) => {
+    const render = async () => {
+      const data = await _getWeatherData()
+      data.forEach((d) => {
+        d.dateTime = new Date(d.dateTime)
+        d.sun = +d.sun
+        d.tide = +d.tide
+      })
       const svg = d3.select(container.current)
       const width = +svg.attr("width")
       const height = +svg.attr("height")
       const margin = { top: 30, right: 30, bottom: 0, left: 0 }
       const innerWidth = width - margin.left - margin.right
       const innerHeight = height - margin.top - margin.bottom
+
+      const initScrollLeft = 420
+      const xBarHeight = 40
+      const indexInData = (scrollPos = 0) => {
+        const bisect = d3.bisector((d) => d.dateTime).left
+        let x0 = x.invert(scrollPos + initScrollLeft)
+        return bisect(data, x0, 1)
+      }
       const g = svg
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`)
@@ -149,8 +166,12 @@ export default function Chart() {
         .join("circle")
         .style("fill", (d, i) => (i === 0 ? "orange" : "none"))
         .attr("r", (d, i) => (i === 0 ? 8 : 12))
-        .attr("cx", x(data[2].dateTime))
-        .attr("cy", ySun(data[2].sun))
+        .attr("cx", x(data[indexInData()].dateTime))
+        .attr("cy", () => {
+          console.log("index", indexInData())
+          console.log("y", ySun(data[indexInData()].sun))
+          return ySun(data[indexInData()].sun)
+        })
         .attr("stroke", "orange")
         .attr("stroke-width", "2px")
         .attr("stroke-dasharray", (d, i) => i === 1 && "2,7.4")
@@ -161,8 +182,6 @@ export default function Chart() {
         .attr("width", width)
         .attr("height", height)
 
-      const initScrollLeft = 420
-      const xBarHeight = 40
       const xBar = g
         .append("g")
         .attr("transform", `translate(0, ${innerHeight - xBarHeight})`)
@@ -189,7 +208,9 @@ export default function Chart() {
         .attr("alignment-baseline", "text-before-edge")
 
       //Moving indicator
-      const xBarIndicatorG = xBar.append("g")
+      const xBarIndicatorG = xBar
+        .append("g")
+        .attr("transform", `translate(${x(data[indexInData()].dateTime)},0)`)
 
       //add triangle
       xBarIndicatorG
@@ -199,12 +220,15 @@ export default function Chart() {
       //add bottom text
       const xBarBottomText = xBarIndicatorG
         .append("text")
+        .text(d3.timeFormat("%-I:%M%p")(data[indexInData()].dateTime))
         .attr("text-anchor", "middle")
         .attr("alignment-baseline", "text-before-edge")
       //add top text
       const xBarTopText = xBarIndicatorG
         .append("text")
         .attr("y", xBarHeight - innerHeight)
+        .text(dateMonth(data[indexInData()].dateTime))
+        .attr("class", "top-text")
         .attr("text-anchor", "middle")
 
       //add Moon
@@ -246,14 +270,11 @@ export default function Chart() {
         .attr("stroke", "url(#e)")
         .attr("stroke-width", 1)
 
-      const bisect = d3.bisector((d) => d.dateTime).left
-
       let lastKnownScrollPosition = 0
       let ticking = false
 
       function setSunPosition(scrollPos) {
-        let x0 = x.invert(scrollPos + initScrollLeft)
-        let i = bisect(data, x0, 1)
+        let i = indexInData(scrollPos)
         let selectedData = data[i]
         xBarIndicatorG.attr(
           "transform",
@@ -290,13 +311,7 @@ export default function Chart() {
         .call(xAxis)
       g.append("g").call(yAxis).attr("class", "helllo")
     }
-
-    mockData.forEach((d) => {
-      d.dateTime = new Date(d.dateTime)
-      d.sun = +d.sun
-      d.tide = +d.tide
-    })
-    render(mockData)
+    render()
   }, [container])
 
   return (

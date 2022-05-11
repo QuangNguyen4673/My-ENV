@@ -1,4 +1,9 @@
 {
+  "jest": {
+    "moduleNameMapper": {
+      "d3": "<rootDir>/node_modules/d3/dist/d3.min.js"
+    }
+  },
   "name": "weather-app",
   "version": "0.1.0",
   "private": true,

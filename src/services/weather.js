@@ -1,3 +1,5 @@
+import mockData from "./data"
+
 const getWeatherStatus = new Promise((resolve) => {
   setTimeout(() => {
     resolve({
@@ -10,4 +12,9 @@ const getWeatherStatus = new Promise((resolve) => {
     })
   }, 100)
 })
-export { getWeatherStatus }
+const getWeatherData = new Promise((resolve) => {
+  setTimeout(() => {
+    resolve(mockData)
+  }, 100)
+})
+export { getWeatherData, getWeatherStatus }
