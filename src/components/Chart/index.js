@@ -167,11 +167,7 @@ export default function Chart() {
         .style("fill", (d, i) => (i === 0 ? "orange" : "none"))
         .attr("r", (d, i) => (i === 0 ? 8 : 12))
         .attr("cx", x(data[indexInData()].dateTime))
-        .attr("cy", () => {
-          console.log("index", indexInData())
-          console.log("y", ySun(data[indexInData()].sun))
-          return ySun(data[indexInData()].sun)
-        })
+        .attr("cy", ySun(data[indexInData()].sun))
         .attr("stroke", "orange")
         .attr("stroke-width", "2px")
         .attr("stroke-dasharray", (d, i) => i === 1 && "2,7.4")
