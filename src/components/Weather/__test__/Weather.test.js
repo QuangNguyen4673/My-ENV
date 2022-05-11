@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react"
 import Weather from "../index.js"
 
-describe("Testing sum4", () => {
+describe("Weather", () => {
   it("renders weather status", async () => {
     render(<Weather />)
     const element = screen.getByTestId("weather-status")

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import Navbar from "../index.js"
-describe("Testing sum1", () => {
+describe("Navbar", () => {
   it("renders Navbar burger icon", () => {
     render(<Navbar />)
     const element = screen.getByTestId("burger")

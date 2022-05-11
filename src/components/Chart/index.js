@@ -291,15 +291,7 @@ export default function Chart() {
 
       weatherChart.addEventListener("scroll", function (e) {
         lastKnownScrollPosition = weatherChart.scrollLeft
-
-        if (!ticking) {
-          window.requestAnimationFrame(function () {
-            setSunPosition(lastKnownScrollPosition)
-            ticking = false
-          })
-
-          ticking = true
-        }
+        setSunPosition(lastKnownScrollPosition)
       })
 
       g.append("g")
