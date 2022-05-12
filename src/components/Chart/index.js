@@ -231,6 +231,7 @@ export default function Chart() {
       const moonWidth = 30
       const moon = xBarIndicatorG
         .append("image")
+        .attr("class", "moon")
         .attr("xlink:href", moonIcon)
         .attr("width", moonWidth)
         .attr("y", 100 + xBarHeight - innerHeight)
@@ -266,9 +267,6 @@ export default function Chart() {
         .attr("stroke", "url(#e)")
         .attr("stroke-width", 1)
 
-      let lastKnownScrollPosition = 0
-      let ticking = false
-
       function setSunPosition(scrollPos) {
         let i = indexInData(scrollPos)
         let selectedData = data[i]
@@ -288,8 +286,9 @@ export default function Chart() {
           .attr("cy", ySun(selectedData.sun))
       }
       const weatherChart = document.querySelector(".weather-chart")
-
+      let lastKnownScrollPosition = 0
       weatherChart.addEventListener("scroll", function (e) {
+        console.log("scrolling")
         lastKnownScrollPosition = weatherChart.scrollLeft
         setSunPosition(lastKnownScrollPosition)
       })
