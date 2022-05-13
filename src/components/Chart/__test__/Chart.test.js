@@ -28,5 +28,7 @@ describe("Chart", () => {
     expect(container.querySelector(".moon")).not.toBeVisible()
     fireEvent.scroll(weatherChart, { target: { scrollLeft: 200 } })
     expect(container.querySelector(".moon")).toBeVisible()
+    fireEvent.scroll(weatherChart, { target: { scrollLeft: 1300 } })
+    expect(container.querySelector(".moon")).not.toBeVisible()
   })
 })
