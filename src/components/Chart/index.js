@@ -25,11 +25,11 @@ export default function Chart() {
       const innerWidth = width - margin.left - margin.right
       const innerHeight = height - margin.top - margin.bottom
 
-      const initScrollLeft = 420
+      const initSunDistance = 420
       const xBarHeight = 40
       const indexInData = (scrollPos = 0) => {
         const bisect = d3.bisector((d) => d.dateTime).left
-        let x0 = x.invert(scrollPos + initScrollLeft)
+        let x0 = x.invert(scrollPos + initSunDistance)
         return bisect(data, x0, 1)
       }
       const g = svg
@@ -236,7 +236,7 @@ export default function Chart() {
         .attr("width", moonWidth)
         .attr("y", 100 + xBarHeight - innerHeight)
         .attr("x", -moonWidth / 2)
-        .attr("opacity", 0)
+        .style("display", "none")
 
       const xBarIndicatorLineG = xBarIndicatorG.append("g")
       const linearGradient = xBarIndicatorLineG
@@ -277,9 +277,9 @@ export default function Chart() {
         xBarBottomText.text(d3.timeFormat("%-I:%M%p")(selectedData.dateTime))
         xBarTopText.text(dateMonth(selectedData.dateTime))
         if (selectedData.sun <= 2) {
-          moon.attr("opacity", "1")
+          moon.style("display", "block")
         } else {
-          moon.attr("opacity", "0")
+          moon.style("display", "none")
         }
         movingObject
           .attr("cx", x(selectedData.dateTime))
@@ -288,8 +288,8 @@ export default function Chart() {
       const weatherChart = document.querySelector(".weather-chart")
       let lastKnownScrollPosition = 0
       weatherChart.addEventListener("scroll", function (e) {
-        console.log("scrolling")
         lastKnownScrollPosition = weatherChart.scrollLeft
+        console.log("scroll left: ", weatherChart.scrollLeft)
         setSunPosition(lastKnownScrollPosition)
       })
 

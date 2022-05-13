@@ -1,14 +1,14 @@
 import {
-  createEvent,
+  cleanup,
   fireEvent,
   render,
   screen,
   waitFor,
 } from "@testing-library/react"
 import Chart from "../index.js"
-
+afterEach(cleanup)
 describe("Chart", () => {
-  it("renders Chart visible", async () => {
+  it("chart visible", async () => {
     render(<Chart />)
     const weatherChart = screen.getByTestId("weather-chart")
     const svgElement = screen.getByTestId("weather-chart-svg")
@@ -19,27 +19,14 @@ describe("Chart", () => {
       expect(container.querySelector('[class="top-text"]')).toBeInTheDocument()
     )
   })
-
-  /* fit("renders Chart visible2", async () => {
-  render(<Chart />)
-  const onScroll = jest.fn().mockImplementation(() => console.log("hi"))
-  const weatherChart = screen.getByTestId("weather-chart")
-
-  fireEvent.scroll(weatherChart)
-
-  await waitFor(() => {
-    expect(onScroll).toHaveBeenCalled()
-  }, 0)
-}) */
-
   it("chart scrolling", async () => {
-    render(<Chart />)
+    const { container } = render(<Chart />)
+    await waitFor(() =>
+      expect(container.querySelector(".moon")).toBeInTheDocument()
+    )
     const weatherChart = screen.getByTestId("weather-chart")
-
-    fireEvent.scroll(weatherChart, { target: { scrollLeft: 300 } })
-
-    await waitFor(() => {
-      expect(weatherChart).toBeInTheDocument()
-    })
+    expect(container.querySelector(".moon")).not.toBeVisible()
+    fireEvent.scroll(weatherChart, { target: { scrollLeft: 200 } })
+    expect(container.querySelector(".moon")).toBeVisible()
   })
 })
